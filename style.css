@@ -1,0 +1,127 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-size: 18px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #232323;
+}
+
+.interface {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 1300px;
+  padding: 20px 60px;
+  background-color: #fff;
+}
+
+.interface-2 {
+  justify-content: center;
+}
+
+#difficult-select,
+#username-input,
+.btn {
+  height: 30px;
+  padding: 5px 10px;
+}
+
+.info {
+  background-color: red;
+  width: 70%;
+  height: 50px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(20%, 20%);
+  display: none;
+}
+
+.btn-start,
+.btn-reset {
+  display: block;
+}
+
+.btn {
+  border: none;
+  background-color: #333;
+  color: #fff;
+  padding: 5px 20px 5px 20px;
+}
+
+.btn-start {
+  margin-right: 20px;
+  background-color: green;
+}
+
+.btn-reset {
+  margin-left: 20px;
+  background-color: orange;
+}
+
+.game-grid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 1300px;
+  /* height: 300px; */
+  align-items: center;
+  /* align-content: stretch; */
+  justify-content: center;
+  justify-items: stretch;
+}
+
+.game-square {
+  background-color: red;
+  margin: 10px;
+  width: calc(1300px / 7);
+  height: calc(1300px / 7);
+  font-size: 96px;
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+  line-height: calc(1300px / 7);
+  cursor: pointer;
+}
+
+.easy .game-square {
+  width: calc(1300px / 7);
+  height: calc(1300px / 7);
+  line-height: calc(1300px / 7);
+}
+
+.normal .game-square {
+  width: calc(1300px / 7.8);
+  height: calc(1300px / 11);
+  line-height: calc(1300px / 11);
+}
+
+.hard .game-square {
+  width: calc(1300px / 10);
+  height: calc(1300px / 11);
+  line-height: calc(1300px / 11);
+}
+
+
+.game-square.active {
+  background-color: green;
+}
+
+.game-square.done {
+  background-color: royalblue;
+}

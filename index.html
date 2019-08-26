@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Memory The Game</title>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="interface interface-1">
+        <div class="difficult">
+          <label for="difficult-select">difficulty level:</label>
+          <select name="difficult-select" id="difficulty-select">
+            <option value="easy">Easy</option>
+            <option value="normal" selected>Normal</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+        <div class="username">
+          <label for="username-input">name:</label>
+          <input type="text" name="username" id="username-input" />
+          <button
+            class="btn btn-ok"
+            id="username-button"
+            data-btn-for="username-input"
+          >
+            ok
+          </button>
+          <span id="username"></span>
+        </div>
+        <div class="timer">game time: <span id="timer">0.00</span></div>
+        <div class="actions">actions counter: <span id="actions">0</span></div>
+      </div>
+      <div id="grid" class="game-grid"></div>
+      <div class="interface interface-2">
+        <div class="info"><span></span></div>
+        <button class="btn btn-start" data-game="start" id="start-stop">
+          START
+        </button>
+        <button class="btn btn-reset" id="reset">RESET</button>
+      </div>
+    </div>
+    <script src="Interface.js"></script>
+    <script src="Square.js"></script>
+    <script src="Grid.js"></script>
+    <script src="Stats.js"></script>
+    <script src="Game.js"></script>
+    <script src="Controller.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>
