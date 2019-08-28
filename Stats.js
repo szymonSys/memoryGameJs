@@ -73,6 +73,14 @@ class Stats {
   }
 
   updateActionsCounter() {
-    if (this.isPlay === true) this.actionsCounter += 1;
+    if (this.isPlay === true) {
+      this.actionsCounter += 1;
+    }
+  }
+
+  resetActionsCounter(counter) {
+    if (this.isPlay) this.changeIsPlay();
+    this.actionsCounter = 0;
+    counter.textContent = "0";
   }
 }

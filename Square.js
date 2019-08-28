@@ -80,9 +80,11 @@ class Square {
       this.color = this.getMatchedColor();
       this.partner._isMatched = true;
       this.partner.color = this.getMatchedColor();
+      return true;
     } else {
       this.color = this.getPassiveColor();
       square.color = this.getPassiveColor();
+      return false;
     }
   }
 }

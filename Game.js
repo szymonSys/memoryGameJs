@@ -54,7 +54,8 @@ class Game {
             state !== "ongoing" &&
             state !== "stopped" &&
             state !== "init" &&
-            state !== "inactive")
+            state !== "inactive" &&
+            state !== "win")
       )
          throw new Error(
             'incorect value of parameter'
@@ -131,7 +132,12 @@ class Game {
    }
 
    makeMatch() {
-      return this._numberOfMatchedSqueres += 2;
+      this._numberOfMatchedSqueres += 2;
+      if (this.checkIfWin()) this.gameState = 'win';
+   }
+
+   resetMatches() {
+      return this._numberOfMatchedSqueres = 0;
    }
 
    initRandomizedSquares() {
@@ -176,7 +182,7 @@ class Game {
             const active = e.target;
             const activeSquere = this.getSquare(active.dataset.order);
 
-            activeSquere.makeMatching(prev.activeSquare);
+            if (activeSquere.makeMatching(prev.activeSquare)) this.makeMatch();
             active.style.backgroundColor = activeSquere.color;
             prev.active.style.backgroundColor = activeSquere.color;
             prev.active = null;
@@ -187,11 +193,13 @@ class Game {
 
    _gameEventHandler = this._mainGameAction();
 
-   initGame(grid, timer) {
-      if (this.gameState === "ongoing" || this.gameState === "stopped") this.resetGame(grid, timer)
+   initGame(grid, timer, counter = null) {
+      console.log(this)
+      if (this.gameState === "ongoing" || this.gameState === "stopped") this.resetGame(grid, timer, counter)
       this.gameState = "init";
       grid.root.className = `game-grid ${this.stats.difficulty.toString()}`;
       grid.render(this.initRandomizedSquares());
+
    }
 
    startGame(grid, timer) {
@@ -201,16 +209,23 @@ class Game {
       this.stats.startTimer(timer);
    }
 
-   resetGame(grid, timer) {
+   resetGame(grid, timer, counter) {
       this.gameState = "inactive";
       grid.root.removeEventListener('click', this._gameEventHandler);
       this.stats.resetTimer(timer);
+      this.stats.resetActionsCounter(counter);
+      this.resetMatches();
    }
 
    stopGame(grid) {
       this.gameState = "stopped";
       grid.root.removeEventListener('click', this._gameEventHandler);
       this.stats.stopTimer();
+   }
+
+   checkIfWin() {
+      // return this.numberOfMatchedSqueres === 2 ? true : false;
+      return this.numberOfMatchedSqueres === this.numberOfSquares ? true : false;
    }
 }
 
