@@ -3,12 +3,14 @@ class Square {
     const _COLORS = {
       passive: "#CCCCCC",
       active: "#1ED760",
-      matched: "#4169E1"
+      matched: "#4169E1",
+      failed: "#ff0000"
     };
 
     this.getPassiveColor = () => _COLORS.passive;
     this.getActiveColor = () => _COLORS.active;
     this.getMatchedColor = () => _COLORS.matched;
+    this.getFailedColor = () => _COLORS.failed;
 
     this._value = value;
     this._order = order;
@@ -65,8 +67,6 @@ class Square {
     return (this._isActive = !this._isActive);
   }
 
-  // Może zrobić osobną klase statyczną z metodami takimi jak: sprawdzanie dopasowania, nadawanie nasłuchiwania itp?
-
   checkMatching(square) {
     if (square.isActive) {
       square.changeActivity();
@@ -82,8 +82,12 @@ class Square {
       this.partner.color = this.getMatchedColor();
       return true;
     } else {
-      this.color = this.getPassiveColor();
-      square.color = this.getPassiveColor();
+      this.color = this.getFailedColor();
+      square.color = this.getFailedColor();
+      setTimeout(() => {
+        this.color = this.getPassiveColor();
+        square.color = this.getPassiveColor();
+      }, 1000)
       return false;
     }
   }

@@ -18,7 +18,7 @@ class Grid {
 
    renderSquare(wrapper, square, index) {
       const elem = document.createElement('div');
-      elem.textContent = square.value;
+      // elem.textContent = square.value;
       elem.id = `sq-${index + 1}`;
       elem.classList.add('game-square');
       elem.dataset.value = square.value;

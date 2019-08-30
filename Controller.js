@@ -55,5 +55,3 @@ class Controller {
       elem.addEventListener(eventType, callback.bind(binded));
    }
 }
-
-const controller = new Controller()

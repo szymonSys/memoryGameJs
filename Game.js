@@ -1,15 +1,16 @@
-// TODO(?): bazowa klasa Game z podstawowymi metodami i właściwościami, z której dziedziczy klasa MemoryGame i rozszerza się o metody bardziej specyficzne dla tej konkretnej gry !!!
 class Game {
    constructor(username, difficulty) {
       this._makeAvailableValues = (from, to) => {
-         const valuesTab = []
+         const valuesTab = [];
          let currentCodeValue = from.charCodeAt();
          const toCodeValue = to.charCodeAt();
-         for (currentCodeValue; currentCodeValue <= toCodeValue; currentCodeValue++) {
+         for (
+            currentCodeValue; currentCodeValue <= toCodeValue; currentCodeValue++
+         ) {
             valuesTab.push(currentCodeValue);
          }
          return [...String.fromCharCode(...valuesTab)];
-      }
+      };
       const _availableValues = this._makeAvailableValues("A", "Z");
       this.getAvailableValues = () => _availableValues;
 
@@ -25,7 +26,7 @@ class Game {
    }
 
    set stats(stats) {
-      return this._stats = stats;
+      return (this._stats = stats);
    }
 
    get numberOfSquares() {
@@ -33,7 +34,7 @@ class Game {
    }
 
    set numberOfSquares(numberOfSquares) {
-      return this._numberOfSquares = numberOfSquares;
+      return (this._numberOfSquares = numberOfSquares);
    }
 
    get numberOfMatchedSqueres() {
@@ -50,29 +51,29 @@ class Game {
 
    set gameState(state) {
       if (
-         typeof state !== "string" || (
-            state !== "ongoing" &&
+         typeof state !== "string" ||
+         (state !== "ongoing" &&
             state !== "stopped" &&
             state !== "init" &&
             state !== "inactive" &&
+            state !== "failed" &&
             state !== "win")
       )
-         throw new Error(
-            'incorect value of parameter'
-         );
+         throw new Error("incorect value of parameter");
       return (this._gameState = state);
    }
 
    _generateNumberOfSquares(difficulty) {
-      if (difficulty === "easy") return this.numberOfSquares = 24;
-      if (difficulty === "normal") return this.numberOfSquares = 36;
-      if (difficulty === "hard") return this.numberOfSquares = 48;
+      if (difficulty === "easy") return (this.numberOfSquares = 24);
+      if (difficulty === "normal") return (this.numberOfSquares = 36);
+      if (difficulty === "hard") return (this.numberOfSquares = 48);
       this.stats.difficulty = "normal";
-      return this.numberOfSquares = 36;
+      return (this.numberOfSquares = 36);
    }
 
    _getRandomValue(values) {
-      if (!values.length || !(this.getAvailableValues() instanceof Array)) throw new Error("wrong type of available values");
+      if (!values.length || !(this.getAvailableValues() instanceof Array))
+         throw new Error("wrong type of available values");
       return values[Math.floor(Math.random() * values.length)];
    }
 
@@ -81,18 +82,23 @@ class Game {
    }
 
    _makeAvailablePositions() {
-      const availablePositions = []
+      const availablePositions = [];
       let currentIndex = 0;
       while (currentIndex < this.numberOfSquares) {
          availablePositions.push(currentIndex);
          currentIndex++;
       }
-      if (currentIndex !== availablePositions.length || availablePositions.length !== this.numberOfSquares) throw new Error('Incorrect initialization of Available Positions')
+      if (
+         currentIndex !== availablePositions.length ||
+         availablePositions.length !== this.numberOfSquares
+      )
+         throw new Error("Incorrect initialization of Available Positions");
       return availablePositions;
    }
 
    _getRandom(available) {
-      if (!available.length || !(available instanceof Array)) throw new Error("wrong type of available");
+      if (!available.length || !(available instanceof Array))
+         throw new Error("wrong type of available");
       return available[Math.floor(Math.random() * available.length)];
    }
 
@@ -102,7 +108,8 @@ class Game {
 
    _sortSquaresByOrder(tab) {
       tab.sort((a, b) => {
-         if (!(a instanceof Square && b instanceof Square)) throw new Error('Element of Array has not require type');
+         if (!(a instanceof Square && b instanceof Square))
+            throw new Error("Element of Array has not require type");
          return a.order - b.order;
       });
    }
@@ -117,12 +124,14 @@ class Game {
    }
 
    setSquare(index, newSquare) {
-      if (!(newSquare instanceof Square)) throw new Error('new square must be instance of Square class!');
-      return this.squares[index] = newSquare;
+      if (!(newSquare instanceof Square))
+         throw new Error("new square must be instance of Square class!");
+      return (this.squares[index] = newSquare);
    }
 
    addSquare(newSquare) {
-      if (!(newSquare instanceof Square)) throw new Error('new square must be instance of Square class!');
+      if (!(newSquare instanceof Square))
+         throw new Error("new square must be instance of Square class!");
       this.squares.push(newSquare);
       return newSquare;
    }
@@ -133,15 +142,19 @@ class Game {
 
    makeMatch() {
       this._numberOfMatchedSqueres += 2;
-      if (this.checkIfWin()) this.gameState = 'win';
+      if (this.checkIfWin()) this.gameState = "win";
    }
 
    resetMatches() {
-      return this._numberOfMatchedSqueres = 0;
+      return (this._numberOfMatchedSqueres = 0);
    }
 
    initRandomizedSquares() {
-      if (!this.getAvailableValues() || !(this.getAvailableValues() instanceof Array)) throw new Error("wrong type of available values");
+      if (
+         !this.getAvailableValues() ||
+         !(this.getAvailableValues() instanceof Array)
+      )
+         throw new Error("wrong type of available values");
 
       if (this.squares.length) this.squares.length = 0;
 
@@ -152,11 +165,17 @@ class Game {
          const randomValue = this._getRandom(values);
          let randomPosition = this._getRandom(availablePositions);
          const sqr = this.addSquare(new Square(randomValue, randomPosition));
-         this._removeAscribed(availablePositions, availablePositions.indexOf(randomPosition));
+         this._removeAscribed(
+            availablePositions,
+            availablePositions.indexOf(randomPosition)
+         );
          randomPosition = this._getRandom(availablePositions);
          this.addSquare(new Square(randomValue, randomPosition, sqr));
          this._removeAscribed(values, values.indexOf(randomValue));
-         this._removeAscribed(availablePositions, availablePositions.indexOf(randomPosition));
+         this._removeAscribed(
+            availablePositions,
+            availablePositions.indexOf(randomPosition)
+         );
       }
 
       this._sortSquaresByOrder(this.squares);
@@ -167,26 +186,59 @@ class Game {
    _mainGameAction() {
       const prev = {
          active: null,
-         activeSquare: null
+         activeSquare: null,
+         state: false
       };
       return e => {
-         if (!this.getSquare(e.target.dataset.order).isMatched) {
+         if (!(this.getSquare(e.target.dataset.order).isMatched || this.gameState === 'failed')) {
             this.stats.updateActionsCounter();
-            if (prev.active === null) {
+            if (prev.active === null || prev.state === false) {
                prev.active = e.target;
-               prev.activeSquare = this.squares[prev.active.dataset.order];
+               prev.activeSquare = this.getSquare(prev.active.dataset.order);
                prev.activeSquare.changeActivity();
+               prev.active.textContent = prev.activeSquare.value;
                prev.active.style.backgroundColor = prev.activeSquare.color;
+               prev.state = true;
                return;
             }
-            const active = e.target;
-            const activeSquere = this.getSquare(active.dataset.order);
 
-            if (activeSquere.makeMatching(prev.activeSquare)) this.makeMatch();
-            active.style.backgroundColor = activeSquere.color;
-            prev.active.style.backgroundColor = activeSquere.color;
-            prev.active = null;
-            prev.activeSquare = null;
+
+            const active = e.target;
+            const activeSquare = this.getSquare(active.dataset.order);
+
+            active.textContent = activeSquare.value;
+
+            if (activeSquare.makeMatching(prev.activeSquare)) {
+               this.makeMatch()
+               active.style.backgroundColor = activeSquare.getMatchedColor();
+               prev.active.style.backgroundColor = prev.activeSquare.getMatchedColor();
+            } else {
+               this.gameState = 'failed';
+               active.style.backgroundColor = activeSquare.getFailedColor();
+               prev.active.style.backgroundColor = prev.activeSquare.getFailedColor();
+            }
+
+            if (this.gameState === 'failed') {
+               setTimeout(() => {
+                  active.style.backgroundColor = activeSquare.getPassiveColor();
+                  prev.active.style.backgroundColor = activeSquare.getPassiveColor();
+                  prev.active.textContent = "";
+                  active.textContent = "";
+
+                  this.gameState = 'ongoing';
+               }, 500)
+            }
+
+            if (this.gameState === 'ongoing') {
+               prev.active = null;
+               prev.activeSquare = null;
+            }
+
+            // prev.active = active;
+            // prev.activeSquare = activeSquare;
+            prev.state = false;
+            //   active = prev.active;
+            //   activeSquere = prev.activeSquare;
          }
       };
    }
@@ -194,24 +246,23 @@ class Game {
    _gameEventHandler = this._mainGameAction();
 
    initGame(grid, timer, counter = null) {
-      console.log(this)
-      if (this.gameState === "ongoing" || this.gameState === "stopped") this.resetGame(grid, timer, counter)
+      if (this.gameState === "ongoing" || this.gameState === "stopped")
+         this.resetGame(grid, timer, counter);
       this.gameState = "init";
       grid.root.className = `game-grid ${this.stats.difficulty.toString()}`;
       grid.render(this.initRandomizedSquares());
-
    }
 
    startGame(grid, timer) {
       if (!(this.gameState === "init" || this.gameState === "stopped")) return;
       this.gameState = "ongoing";
-      grid.root.addEventListener('click', this._gameEventHandler);
+      grid.root.addEventListener("click", this._gameEventHandler);
       this.stats.startTimer(timer);
    }
 
    resetGame(grid, timer, counter) {
       this.gameState = "inactive";
-      grid.root.removeEventListener('click', this._gameEventHandler);
+      grid.root.removeEventListener("click", this._gameEventHandler);
       this.stats.resetTimer(timer);
       this.stats.resetActionsCounter(counter);
       this.resetMatches();
@@ -219,7 +270,7 @@ class Game {
 
    stopGame(grid) {
       this.gameState = "stopped";
-      grid.root.removeEventListener('click', this._gameEventHandler);
+      grid.root.removeEventListener("click", this._gameEventHandler);
       this.stats.stopTimer();
    }
 
@@ -228,8 +279,3 @@ class Game {
       return this.numberOfMatchedSqueres === this.numberOfSquares ? true : false;
    }
 }
-
-// const game = new Game("Szymon", "hard");
-// const grid = new Grid("grid");
-// game.initGame(grid);
-// game.startGame(grid);
