@@ -22,7 +22,7 @@ class Controller {
             }
             if (this.game.gameState === 'win') {
                this.game.stopGame(this.grid);
-               this.interface.addGameSummary(this.game.stats.timerValue, this.game.stats.actionsCounter, this.game.initGame, this.grid, this.interface.timer, this.interface.actionsCounter, this.game, document.getElementById('container'))
+               this.interface.addGameSummary(this.game.stats._getTimerResoult(), this.game.stats.actionsCounter, this.game.initGame, this.grid, this.interface.timer, this.interface.actionsCounter, this.game, document.getElementById('container'))
             }
          })
       });

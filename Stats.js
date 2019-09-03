@@ -6,6 +6,14 @@ class Stats {
     this._actionsCounter = 0;
     this._isPlay = false;
     this._timerIntervalCount;
+    const _timerValues = {
+      minutes: 0,
+      seconds: 0,
+      stringMinutes: '',
+      stringResoult: ''
+    }
+    this._getTimerValues = () => _timerValues;
+    this._getTimerResoult = () => _timerValues.stringResoult;
   }
 
   get username() {
@@ -61,16 +69,27 @@ class Stats {
 
   resetTimer(timer) {
     if (this.isPlay) this.changeIsPlay();
+    const values = this._getTimerValues();
+    values.seconds = 0;
+    values.minutes = 0;
+    values.stringMinutes = '';
     this._timerValue = 0;
-    timer.textContent = "0.00";
+    timer.textContent = "00.00";
   }
 
   updateTimer(timer) {
     if (this.isPlay === false) return;
-    this._timerValue += 1;
-    timer.textContent = this.timerValue;
-    setTimeout(this.updateTimer.bind(this, timer), 1000);
+    const values = this._getTimerValues();
+    values.seconds = (this.timerValue / 100) % 60;
+    this.timerValue++;
+    if ((this.timerValue / 100) % 60 === 0) values.minutes++;
+    if (values.minutes > 0 && values.minutes < 10) values.stringMinutes = '0' + values.minutes + '.';
+    else if (values.minutes > 10) values.stringMinutes = values.minutes + '.';
+    values.stringResoult = `${values.stringMinutes}${values.seconds < 10 ? '0' + values.seconds.toFixed(2) : values.seconds.toFixed(2)}`;
+    timer.textContent = values.stringResoult;
+    setTimeout(this.updateTimer.bind(this, timer), 10);
   }
+
 
   updateActionsCounter() {
     if (this.isPlay === true) {
