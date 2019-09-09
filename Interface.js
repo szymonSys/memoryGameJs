@@ -95,11 +95,13 @@ class Interface {
 
   addGameSummary(time, actions, restartCallback, grid, timer, counter, binded, container = document.body) {
     const summaryPopup = document.createElement('div');
+
     summaryPopup.innerHTML = `
     <h1>Win!</h1>
     <h2>Time: ${time}</h2>
     <h3>Number of actions: ${actions}</h3>
     `;
+
     container.style.position = 'relative';
     summaryPopup.style.width = '600px';
     summaryPopup.style.height = '300px';
@@ -111,20 +113,24 @@ class Interface {
     summaryPopup.style.backgroundColor = 'green';
     summaryPopup.style.textAlign = 'center';
     summaryPopup.id = 'summary-popup';
+
     const btn = document.createElement('button');
+
     btn.textContent = 'NEW GAME';
     btn.id = 'new-game-btn';
     btn.className = 'btn';
     btn.style.backgroundColor = 'red';
     summaryPopup.appendChild(btn);
     container.appendChild(summaryPopup);
+
     const btnHtml = document.getElementById('new-game-btn');
+
     btnHtml.addEventListener('click', () => {
       restartCallback.call(binded, grid, timer, counter);
       this.removeGameSummary();
+
       if (this.gameBtn.dataset.game === 'stop') this.changeGameBtn('start');
     });
-
   }
 
   removeGameSummary(elem = document.getElementById('summary-popup')) {

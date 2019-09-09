@@ -16,7 +16,7 @@ body {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  background-color: #232323;
+  background-color: #ffffff;
 }
 
 .interface {
@@ -124,4 +124,17 @@ body {
 
 .game-square.done {
   background-color: royalblue;
+}
+
+.rank-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 1300px;
+  height: 100px;
+  background-color: #ffffff;
+  color: #222222;
+  border-bottom: 4px solid #666666;
+  text-transform: capitalize;
+  font-weight: bold;
 }

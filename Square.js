@@ -1,7 +1,7 @@
 class Square {
   constructor(value, order, partner = null) {
     const _COLORS = {
-      passive: "#CCCCCC",
+      passive: "#888888",
       active: "#1ED760",
       matched: "#4169E1",
       failed: "#ff0000"
@@ -18,6 +18,7 @@ class Square {
     this._isActive = false;
     this._isMatched = false;
     this._partner = partner;
+
     if (partner instanceof Square) partner.partner = this;
   }
 
@@ -70,6 +71,7 @@ class Square {
   checkMatching(square) {
     if (square.isActive) {
       square.changeActivity();
+
       return (this.value === square.value && this.order !== square.order) ? true : false;
     }
   }
@@ -80,14 +82,17 @@ class Square {
       this.color = this.getMatchedColor();
       this.partner._isMatched = true;
       this.partner.color = this.getMatchedColor();
+
       return true;
     } else {
       this.color = this.getFailedColor();
       square.color = this.getFailedColor();
+
       setTimeout(() => {
         this.color = this.getPassiveColor();
         square.color = this.getPassiveColor();
       }, 1000)
+
       return false;
     }
   }

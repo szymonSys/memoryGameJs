@@ -1,20 +1,21 @@
 class Result {
    constructor(time = null, actions = null, playerName = '') {
-      if (!(time || actions)) {
+      if (!(time || actions))
          throw new Error("You have to set time and actions properties");
-      }
+
       this._time = time;
       this._actions = actions;
       this._playerName = playerName ? playerName : 'anonim';
    }
+
    get time() {
       return this._time;
    }
 
    set time(time) {
-      if (!time) {
+      if (!time)
          throw new Error("You have to set time property");
-      }
+
       return this._time = time;
    }
 
@@ -23,9 +24,9 @@ class Result {
    }
 
    set actions(actions) {
-      if (!actions) {
+      if (!actions)
          throw new Error("You have to set actions property");
-      }
+
       return this._actions = actions;
    }
 

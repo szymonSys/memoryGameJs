@@ -1,9 +1,9 @@
 class Grid {
    constructor(root) {
       this._root = document.getElementById(root);
-      // this._numberOfSquares = numberOfSquares;
       this._squares = [];
    }
+
    get root() {
       return this._root;
    }
@@ -18,7 +18,7 @@ class Grid {
 
    renderSquare(wrapper, square, index) {
       const elem = document.createElement('div');
-      // elem.textContent = square.value;
+
       elem.id = `sq-${index + 1}`;
       elem.classList.add('game-square');
       elem.dataset.value = square.value;
@@ -26,15 +26,19 @@ class Grid {
       elem.dataset.isActive = square.isActive.toString();
       elem.dataset.isMatched = square.isMatched.toString();
       elem.style.backgroundColor = square.color;
+
       wrapper.appendChild(elem)
    }
 
    render(squares) {
       this.root.innerHTML = '';
+
       const wrapper = document.createDocumentFragment();
+
       squares.forEach((square, index) => {
          this.renderSquare(wrapper, square, index);
       });
+
       this.root.appendChild(wrapper);
    }
 }

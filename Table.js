@@ -1,9 +1,46 @@
 class Table {
-   constructor(selector = '#rank-table', rankTable = []) {
-      this._htmlRankTable = document.querySelector(selector);
-      this._rankTable = rankTable;
+   constructor(selector = '#results-table', rankTable = null) {
+      this._htmlTable = document.querySelector(selector);
+      this._rankTable = rankTable ? rankTable : this.loadFromStorage();
       this._htmlIsSorted = false;
       this._tableIsSorted = false;
+      this._tableProps = {
+         display: "flex",
+         width: "1300px",
+         flexDirection: "column",
+         alignItems: "center",
+         backgroundColor: "#ffffff",
+         color: "#111111"
+      };
+      this._resultElementProps = {
+         id: "rank-table-result",
+         typeClass: "result-part",
+         typeId: {
+            number: "result-number",
+            playerName: "result-name",
+            time: "result-time",
+            actions: "result-counter",
+         },
+         style: {
+            'display': "flex",
+            'width': "1300px",
+            'height': "100px",
+            'flex-direction': "row",
+            'flex-wrap': "nowrap",
+            'justify-content': 'space-evenly',
+            'align-items': 'center',
+            'text-align': "center",
+            'line-height': "100px",
+            'border-bottom': "2px solid #999999"
+         },
+         childWidth: "25%",
+      };
+      this.safeToStorage();
+      this.renderRankTable();
+   }
+
+   get htmlTable() {
+      return this._htmlTable;
    }
 
    get rankTable() {
@@ -38,6 +75,22 @@ class Table {
       return this._tableIsSorted = bool;
    }
 
+   get resultElementProps() {
+      return this._resultElementProps;
+   }
+
+   set resultElementProps(props) {
+      return this._resultElementProps = props;
+   }
+
+   get tableProps() {
+      return this._tableProps;
+   }
+
+   set tableProps(props) {
+      return this._tableProps = props;
+   }
+
    pushResult(result) {
       if (!(result instanceof Result)) throw new Error("element which you want add is not instance of Result")
       this.rankTable.push(result);
@@ -52,65 +105,117 @@ class Table {
    }
 
    addSortedResult(result, table = this.rankTable, by = 'time', order = 'ASC') {
-      if (!(result instanceof Result)) throw new Error("element which you want add is not instance of Result")
+      if (!(result instanceof Result))
+         throw new Error("element which you want add is not instance of Result");
+
       if (!(by === 'time' || by === 'userName' || by === 'actions'))
          throw new Error("set correct type of sorting");
 
-      const _add = (isSorted) => {
-         if (result[by] === undefined) throw new Error("set correct type of sorting");
-         if (!isSorted) this.sortRankTable(table, by);
-         if (table[0][by] >= result[by]) return table.unshift(result);
-         if (table[table.length - 1][by] < result[by]) return table.push(result);
-         for (let i = 0; i < table.length - 1; i++) {
-            console.log(table[i][by], result[by], table[i + 1][by])
-            if (table[i][by] < result[by] && table[i + 1][by] >= result[by])
-               return table.splice(i + 1, 0, result)
-         }
-         return -1;
-      }
-
-      if (table === this.rankTable) _add(this.tableIsSorted);
-      else if (table === this.htmlTable) _add(this.htmlIsSorted);
+      this._add(result, table, this.tableIsSorted, by, order);
+      this.safeToStorage();
 
    }
-   // ASC/DESC
-   sortRankTable(tab = this.rankTable, by = 'time', order = 'ASC') {
+
+   sortTable(tab = this.rankTable, by = 'time', order = 'ASC') {
       tab.sort((a, b) => {
          if (!(a instanceof Result && b instanceof Result))
             throw new Error("Element of Array has not require type");
+
          if (tab === this.rankTable) this.tableIsSorted = true;
          else if (tab === this.htmlTable) this.htmlIsSorted = true;
+
          return order === 'ASC' ? a[by] - b[by] : b[by] - a[by];
       });
    }
 
    safeToStorage() {
-
+      localStorage.setItem('rankTable', JSON.stringify(this.rankTable));
    }
 
    loadFromStorage() {
-
+      if (this.hasStorage()) {
+         return JSON.parse(localStorage.getItem('rankTable')).map(result => new Result(result._time, result._actions, result._playerName));
+      } else return [];
    }
 
-   addToView(result, selectorName = '.result') {
+   setRankTableFromStorage() {
+      return this.rankTable = this.loadFromStorage();
+   }
+
+   hasStorage() {
+      return localStorage.hasOwnProperty('rankTable') && JSON.parse(localStorage.getItem('rankTable')) instanceof Array ? true : false;
+   }
+
+   renderRankTable() {
+      const docFragment = document.createDocumentFragment();
+
+      if (!this.rankTable instanceof Array) throw new Error('incorrect instance of argument - it is not Array');
+
+      for (const prop in this.tableProps) {
+         this.htmlTable.style[prop] = this.tableProps[prop];
+      }
+
+      for (let i = 0; i < this.rankTable.length; i++) {
+
+         const result = document.createElement('div');
+         result.id = this.resultElementProps.id;
+         result.className = this.resultElementProps.id;
+
+         for (const prop in this.resultElementProps.style) {
+            result.style[prop] = this.resultElementProps.style[prop];
+         }
+
+         for (const id in this.resultElementProps.typeId) {
+            result.innerHTML += `<div id="${this.resultElementProps.typeId[id]}" style = "${this.resultElementProps.childWidth}" class="${this.resultElementProps.typeClass}">
+               <span>${id === 'number' ? i+1 : this.rankTable[i][id]}</span>
+            </div>`;
+         }
+
+         docFragment.appendChild(result);
+      }
+      this.htmlTable.appendChild(docFragment);
+   }
+
+   addResultToView(result) {
 
    }
 
    binarSearching = (elem, tab) => {
-      let searched = false;
-      let left = 0,
+      let searched = false,
+         left = 0,
          right = tab.length - 1,
          mid;
+
       while (left <= right && !searched) {
          mid = (left + right) / 2;
+
          if (tab[mid] === elem) searched = true;
-         else
-         if (tab[mid] < elem) left = mid + 1;
+         else if (tab[mid] < elem) left = mid + 1;
          else right = mid - 1;
+
          if (searched) return mid;
       }
+
+      return -1;
+   }
+
+   _add = (result, table, isSorted, by = 'time', order = 'ASC') => {
+      if (result[by] === undefined)
+         throw new Error("set correct type of sorting");
+
+      if (!this.rankTable.length) this.pushResult(result);
+
+      if (!isSorted) this.sortTable(table, by, order);
+
+      if (table[0][by] >= result[by]) return table.unshift(result);
+
+      if (table[table.length - 1][by] < result[by]) return table.push(result);
+
+      for (let i = 0; i < table.length - 1; i++) {
+         if (table[i][by] < result[by] && table[i + 1][by] >= result[by])
+            return table.splice(i + 1, 0, result);
+      }
+
       return -1;
    }
 }
-
-const table = new Table('#container', [new Result(3, 2, "Ada"), new Result(1, 6, "Adam"), new Result(52, 43, "Krystia"), new Result(44, 64, "Marta"), new Result(21, 54, "Szymon"), new Result(34, 64, "Mariusz")]);
