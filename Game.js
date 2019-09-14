@@ -288,6 +288,7 @@ class Game {
    }
 
    checkIfWin() {
-      return this.numberOfMatchedSqueres === this.numberOfSquares ? true : false;
+      // return this.numberOfMatchedSqueres === this.numberOfSquares ? true : false;
+      return this.numberOfMatchedSqueres === 2 ? true : false;
    }
 }

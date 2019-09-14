@@ -20,6 +20,7 @@ class Table {
             playerName: "result-name",
             time: "result-time",
             actions: "result-counter",
+            difficulty: "result-difficulty"
          },
          style: {
             'display': "flex",
@@ -134,7 +135,7 @@ class Table {
 
    loadFromStorage() {
       if (this.hasStorage()) {
-         return JSON.parse(localStorage.getItem('rankTable')).map(result => new Result(result._time, result._actions, result._playerName));
+         return JSON.parse(localStorage.getItem('rankTable')).map(result => new Result(result._time, result._actions, result._difficulty, result._playerName));
       } else return [];
    }
 
@@ -158,7 +159,8 @@ class Table {
       for (let i = 0; i < this.rankTable.length; i++) {
 
          const result = document.createElement('div');
-         result.id = this.resultElementProps.id;
+         // result.id = `result-${i+1}`;
+         result.dataset.type = this.resultElementProps.id;
          result.className = this.resultElementProps.id;
 
          for (const prop in this.resultElementProps.style) {
@@ -166,6 +168,7 @@ class Table {
          }
 
          for (const id in this.resultElementProps.typeId) {
+            result.dataset[id] = id === 'number' ? i + 1 : this.rankTable[i][id];
             result.innerHTML += `<div id="${this.resultElementProps.typeId[id]}" style = "${this.resultElementProps.childWidth}" class="${this.resultElementProps.typeClass}">
                <span>${id === 'number' ? i+1 : this.rankTable[i][id]}</span>
             </div>`;
@@ -176,8 +179,65 @@ class Table {
       this.htmlTable.appendChild(docFragment);
    }
 
-   addResultToView(result) {
+   addResultToView(result, by = 'time') {
 
+      function addNewNode(i) {
+         const newNode = document.createElement('div');
+
+         newNode.dataset.type = this.resultElementProps.id;
+         newNode.className = this.resultElementProps.id;
+
+         for (const prop in this.resultElementProps.style) {
+            newNode.style[prop] = this.resultElementProps.style[prop];
+         }
+
+         for (const id in this.resultElementProps.typeId) {
+            newNode.dataset[id] = id === 'number' ? +i : result[id];
+            newNode.innerHTML += `<div id="${this.resultElementProps.typeId[id]}" style="${this.resultElementProps.childWidth}" class="${this.resultElementProps.typeClass}">
+                  <span>${id === 'number' ? +i: result[id]}</span>
+               </div>`;
+         }
+
+         return newNode
+      }
+
+      if (!result instanceof Result)
+         throw new Error('parameter must be instance of Result');
+
+      let index = 0;
+
+      if (!this.htmlTable.childNodes.length)
+         this.htmlTable.appendChild(addNewNode.call(this, 0));
+      else {
+         for (const node of [...this.htmlTable.childNodes]) {
+            index++;
+
+            if (!node.previousSibling && result.time <= node.dataset.time) {
+               this.htmlTable.insertBefore(addNewNode.call(this, node.dataset.number), node);
+
+               break;
+
+            } else if (!node.nextSibling && result.time >= node.dataset.time) {
+               this.htmlTable.appendChild(addNewNode.call(this, node.dataset.number));
+
+               break;
+
+            } else if (result.time > node.dataset.time && result.time <= node.nextSibling.dataset.time) {
+               this.htmlTable.insertBefore(addNewNode.call(this, node.dataset.number), node.nextSibling);
+
+               break;
+            }
+         }
+      }
+
+      const htmlNodes = [...this.htmlTable.childNodes];
+
+      console.log(index)
+
+      for (let i = index; i <= htmlNodes.length - 1; i++) {
+         htmlNodes[i].dataset.number++;
+         htmlNodes[i].firstChild.innerHTML = `<span>${htmlNodes[i].dataset.number}</span>`;
+      }
    }
 
    binarSearching = (elem, tab) => {
@@ -203,7 +263,10 @@ class Table {
       if (result[by] === undefined)
          throw new Error("set correct type of sorting");
 
-      if (!this.rankTable.length) this.pushResult(result);
+      if (!this.rankTable.length) {
+         this.pushResult(result);
+         return;
+      };
 
       if (!isSorted) this.sortTable(table, by, order);
 

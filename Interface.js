@@ -44,7 +44,7 @@ class Interface {
   }
 
   get nameBtn() {
-    return this._resetBtn;
+    return this._nameBtn;
   }
 
   set nameBtn(nameBtn) {

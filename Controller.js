@@ -14,6 +14,18 @@ class Controller {
          if (document.getElementById('summary-popup')) this.interface.removeGameSummary();
       }, "change");
 
+      this.addListener(this.interface.nameBtn, () => {
+
+         if (this.game.gameState !== 'ongoing' && this.game.gameState !== 'failed') {
+            if (!this.interface.nameInput.value) {
+               this.interface.nameInput.style.backgroundColor = 'red';
+               setTimeout(() => this.interface.nameInput.style.backgroundColor = '#ffffff', 1000);
+            } else {
+               this.game.stats.username = this.interface.nameInput.value;
+            }
+         }
+      });
+
       this.addListener(this.interface.gameBtn, () => {
          if (this.game.gameState === "init" || this.game.gameState === "stopped")
             this.game.startGame(this.grid, this.interface.timer);
@@ -31,6 +43,17 @@ class Controller {
 
             if (this.game.gameState === 'win') {
                this.game.stopGame(this.grid);
+
+               const result = new Result(
+                  this.game.stats._getTimerResoult(),
+                  this.game.stats.actionsCounter,
+                  this.game.stats.difficulty,
+                  this.game.stats.username
+               );
+
+               this.table.addSortedResult(result);
+               this.table.addResultToView(result);
+
                this.interface.addGameSummary(
                   this.game.stats._getTimerResoult(),
                   this.game.stats.actionsCounter,
@@ -50,7 +73,6 @@ class Controller {
 
          if (document.getElementById('summary-popup')) this.interface.removeGameSummary();
       });
-
    }
 
    get interface() {
@@ -75,6 +97,14 @@ class Controller {
 
    set grid(grid) {
       return this._grid = grid;
+   }
+
+   get table() {
+      return this._table;
+   }
+
+   set table(table) {
+      return this._table = table;
    }
 
    addListener(elem, callback, eventType = "click", binded = this) {
