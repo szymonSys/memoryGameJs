@@ -37,7 +37,7 @@ class Controller {
          if (document.getElementById('summary-popup')) this.interface.removeGameSummary();
 
          this.addListener(this.grid.root, function (e) {
-            if ((this.game.gameState === "ongoing" || this.game.gameState === 'win') && e.target.className === "game-square") {
+            if ((this.game.gameState === "ongoing" || this.game.gameState === 'win' || this.game.gameState === 'failed') && e.target.className === "game-square") {
                this.interface.actionsCounter = this.game.stats.actionsCounter;
             }
 
@@ -45,6 +45,7 @@ class Controller {
                this.game.stopGame(this.grid);
 
                const result = new Result(
+                  this.game.stats.timerValue,
                   this.game.stats._getTimerResoult(),
                   this.game.stats.actionsCounter,
                   this.game.stats.difficulty,

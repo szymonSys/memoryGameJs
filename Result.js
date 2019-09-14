@@ -1,12 +1,12 @@
 class Result {
-   constructor(time = null, actions = null, difficulty = null, playerName = '') {
+   constructor(timeValue = null, time = null, actions = null, difficulty = null, playerName = '') {
       if (!(time || actions))
          throw new Error("You have to set time and actions properties");
 
       this._time = time;
       this._actions = actions;
       this._playerName = playerName ? playerName : 'anonim';
-      this._difficulty = difficulty;
+      this._timeValue = timeValue;
    }
 
    get time() {
@@ -48,5 +48,13 @@ class Result {
          throw new Error("You have to set difficulty property");
 
       return this._difficulty = difficulty;
+   }
+
+   get timeValue() {
+      return this._timeValue
+   }
+
+   set timeValue(value) {
+      return this._timeValue = value;
    }
 }

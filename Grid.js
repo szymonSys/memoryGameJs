@@ -26,7 +26,7 @@ class Grid {
     elem.dataset.isActive = square.isActive.toString();
     elem.dataset.isMatched = square.isMatched.toString();
     elem.style.backgroundColor = square.color;
-    // elem.textContent = square.value;
+    elem.textContent = square.value;
 
     wrapper.appendChild(elem);
   }

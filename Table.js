@@ -20,6 +20,7 @@ class Table {
             playerName: "result-name",
             time: "result-time",
             actions: "result-counter",
+            timeValue: "timeValue",
             difficulty: "result-difficulty"
          },
          style: {
@@ -117,7 +118,7 @@ class Table {
 
    }
 
-   sortTable(tab = this.rankTable, by = 'time', order = 'ASC') {
+   sortTable(tab = this.rankTable, by = 'timeValue', order = 'ASC') {
       tab.sort((a, b) => {
          if (!(a instanceof Result && b instanceof Result))
             throw new Error("Element of Array has not require type");
@@ -135,7 +136,7 @@ class Table {
 
    loadFromStorage() {
       if (this.hasStorage()) {
-         return JSON.parse(localStorage.getItem('rankTable')).map(result => new Result(result._time, result._actions, result._difficulty, result._playerName));
+         return JSON.parse(localStorage.getItem('rankTable')).map(result => new Result(result._timeValue, result._time, result._actions, result._difficulty, result._playerName));
       } else return [];
    }
 
@@ -167,7 +168,10 @@ class Table {
             result.style[prop] = this.resultElementProps.style[prop];
          }
 
+         // result.dataset.timeValue = result.timeValue;
+
          for (const id in this.resultElementProps.typeId) {
+            if (id === 'timeValue') continue;
             result.dataset[id] = id === 'number' ? i + 1 : this.rankTable[i][id];
             result.innerHTML += `<div id="${this.resultElementProps.typeId[id]}" style = "${this.resultElementProps.childWidth}" class="${this.resultElementProps.typeClass}">
                <span>${id === 'number' ? i+1 : this.rankTable[i][id]}</span>
@@ -179,7 +183,7 @@ class Table {
       this.htmlTable.appendChild(docFragment);
    }
 
-   addResultToView(result, by = 'time') {
+   addResultToView(result, by = 'timeValue') {
 
       function addNewNode(i) {
          const newNode = document.createElement('div');
@@ -191,7 +195,10 @@ class Table {
             newNode.style[prop] = this.resultElementProps.style[prop];
          }
 
+         newNode.dataset.timeValue = result.timeValue;
+
          for (const id in this.resultElementProps.typeId) {
+            if (id === "timeValue") continue;
             newNode.dataset[id] = id === 'number' ? +i : result[id];
             newNode.innerHTML += `<div id="${this.resultElementProps.typeId[id]}" style="${this.resultElementProps.childWidth}" class="${this.resultElementProps.typeClass}">
                   <span>${id === 'number' ? +i: result[id]}</span>
@@ -212,17 +219,17 @@ class Table {
          for (const node of [...this.htmlTable.childNodes]) {
             index++;
 
-            if (!node.previousSibling && result.time <= node.dataset.time) {
+            if (!node.previousSibling && result.timeValue <= node.dataset.timeValue) {
                this.htmlTable.insertBefore(addNewNode.call(this, node.dataset.number), node);
 
                break;
 
-            } else if (!node.nextSibling && result.time >= node.dataset.time) {
+            } else if (!node.nextSibling && result.timeValue >= node.dataset.timeValue) {
                this.htmlTable.appendChild(addNewNode.call(this, node.dataset.number));
 
                break;
 
-            } else if (result.time > node.dataset.time && result.time <= node.nextSibling.dataset.time) {
+            } else if (result.timeValue > node.dataset.timeValue && result.timeValue <= node.nextSibling.dataset.timeValue) {
                this.htmlTable.insertBefore(addNewNode.call(this, node.dataset.number), node.nextSibling);
 
                break;
@@ -231,8 +238,6 @@ class Table {
       }
 
       const htmlNodes = [...this.htmlTable.childNodes];
-
-      console.log(index)
 
       for (let i = index; i <= htmlNodes.length - 1; i++) {
          htmlNodes[i].dataset.number++;
@@ -259,7 +264,7 @@ class Table {
       return -1;
    }
 
-   _add = (result, table, isSorted, by = 'time', order = 'ASC') => {
+   _add = (result, table, isSorted, by = 'timeValue', order = 'ASC') => {
       if (result[by] === undefined)
          throw new Error("set correct type of sorting");
 
