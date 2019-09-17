@@ -7,6 +7,7 @@ class Result {
       this._actions = actions;
       this._playerName = playerName ? playerName : 'anonim';
       this._timeValue = timeValue;
+      this._difficulty = difficulty;
    }
 
    get time() {

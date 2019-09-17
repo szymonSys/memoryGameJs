@@ -20,7 +20,7 @@ class Table {
             playerName: "result-name",
             time: "result-time",
             actions: "result-counter",
-            timeValue: "timeValue",
+            timeValue: "time-value",
             difficulty: "result-difficulty"
          },
          style: {
@@ -171,8 +171,8 @@ class Table {
          // result.dataset.timeValue = result.timeValue;
 
          for (const id in this.resultElementProps.typeId) {
-            if (id === 'timeValue') continue;
             result.dataset[id] = id === 'number' ? i + 1 : this.rankTable[i][id];
+            if (id === 'timeValue') continue;
             result.innerHTML += `<div id="${this.resultElementProps.typeId[id]}" style = "${this.resultElementProps.childWidth}" class="${this.resultElementProps.typeClass}">
                <span>${id === 'number' ? i+1 : this.rankTable[i][id]}</span>
             </div>`;
